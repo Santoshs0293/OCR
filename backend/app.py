@@ -22,6 +22,19 @@ app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    # Mock authentication (replace this with your actual authentication logic)
+    if username == 'test' and password == 'test':
+        return jsonify({'token': 'your_access_token'}), 200
+    else:
+        return jsonify({'error': 'Invalid credentials'}), 401
+
+
 print("UPLOAD_FOLDER path:", app.config['UPLOAD_FOLDER'])
 def process_uploaded_file(file_name):
     try:
