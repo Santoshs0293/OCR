@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Login from './components/Login';
-import './App.css';
+import './Upload.css';
 
-const App = () => {
+const Upload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
   const [uploadedFileUrl, setUploadedFileUrl] = useState('');
@@ -86,56 +85,50 @@ const App = () => {
       return <p>File type not supported for preview</p>;
     }
   };
-  const handleLogin = (token) => {
-    setUserToken(token);
-  };
-
+  
   return (
-    <div className="App">
-      {!userToken ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <div>
-          <h1>Welcome Advision Translation Tool</h1>
-          <input type="file" onChange={handleFileChange} style={{ marginBottom: '20px' }} />
-          <button onClick={handleUpload}>  Upload  </button>
-          {uploadMessage && <p style={{ color: 'green', marginBottom: '20px' }}>{uploadMessage}</p>}
-
-          {uploadedFileUrl && (
-            <div style={{ marginTop: '40px', textAlign: 'left' }}>
-              <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Uploaded File:</p>
-              {renderFile()}
-              
-              <div id="downloadContainer">
-                <button
-                  onClick={fetchDocxFiles}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#61dafb',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.3s ease',
-                    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                    outline: 'none',
-                    marginTop: '20px',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#4fa3d1';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = '#61dafb';
-                  }}
-                >
-                  Download Uploaded File
-                </button>
-              </div>
+    
+      <div>
+        <h1>Welcome Advision Translation Tool</h1>
+        <input type="file" onChange={handleFileChange} style={{ marginBottom: '20px' }} />
+        <button onClick={handleUpload}>Upload</button>
+        {uploadMessage && <p style={{ color: 'green', marginBottom: '20px' }}>{uploadMessage}</p>}
+  
+        {uploadedFileUrl && (
+          <div style={{ marginTop: '40px', textAlign: 'left' }}>
+            <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Uploaded File:</p>
+            {renderFile()}
+  
+            <div id="downloadContainer">
+              <button
+                onClick={fetchDocxFiles}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#61dafb',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease',
+                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                  outline: 'none',
+                  marginTop: '20px',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#4fa3d1';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = '#61dafb';
+                }}
+              >
+                Download Uploaded File
+              </button>
             </div>
-          )}
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    
   );
+  
 };
-export default App;
+export default Upload;

@@ -1,38 +1,34 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import './Login.css';
+import './Register.css'; // Import your CSS file
 
-
-
-const Login = ({onLogin}) => {
+const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', {
+      const response = await axios.post('http://localhost:5000/register', {
         username,
         password,
       });
 
-      if (response.status === 200) {
-        onLogin();
-        navigate('/Translation');
-        
+      if (response.status === 201) {
+        navigate('/login');
       }
     } catch (error) {
-      setError('Invalid credentials');
+      setError('Username already exists or invalid data');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
+    <div className="register-container">
+      <h2>Register</h2>
       <div className="input-container">
-        <label className="input-label">Username:</label>
+        <label>Username:</label>
         <input
           type="text"
           value={username}
@@ -41,7 +37,7 @@ const Login = ({onLogin}) => {
         />
       </div>
       <div className="input-container">
-        <label className="input-label">Password:</label>
+        <label>Password:</label>
         <input
           type="password"
           value={password}
@@ -50,14 +46,14 @@ const Login = ({onLogin}) => {
         />
       </div>
       {error && <p className="error-message">{error}</p>}
-      <button className="login-button" onClick={handleLogin}>
-        Login
+      <button className="register-button" onClick={handleRegister}>
+        Register
       </button>
-      <p className="register-link">
-        Don't have an account? <Link to="/register">Register here</Link>.
+      <p className="login-link">
+        Already have an account? <Link to="/login">Login here</Link>.
       </p>
     </div>
   );
 };
 
-export default Login;
+export default Register;

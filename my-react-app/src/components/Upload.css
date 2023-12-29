@@ -1,0 +1,45 @@
+/* Upload.css */
+
+.upload-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .upload-message {
+    color: green;
+    margin: 20px 0;
+  }
+  
+  .uploaded-file-container {
+    margin-top: 40px;
+    text-align: left;
+  }
+  
+  .uploaded-file-label {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .download-container {
+    margin-top: 20px;
+  }
+  
+  .download-button {
+    padding: 10px 20px;
+    background-color: #61dafb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .download-button:hover {
+    background-color: #4fa3d1;
+  }
+  
