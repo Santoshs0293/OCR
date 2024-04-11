@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import Header from './Header'; // Adjust the path accordingly
+import Footer from './Footer'; 
 import './Login.css';
 
 
@@ -29,6 +31,9 @@ const Login = ({onLogin}) => {
   };
 
   return (
+    <div>
+      <Header />
+    
     <div className="login-container">
       <h2>Login</h2>
       <div className="input-container">
@@ -56,6 +61,8 @@ const Login = ({onLogin}) => {
       <p className="register-link">
         Don't have an account? <Link to="/register">Register here</Link>.
       </p>
+    </div>
+    <Footer />
     </div>
   );
 };

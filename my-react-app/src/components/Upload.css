@@ -1,7 +1,28 @@
 /* Upload.css */
 
+.custom-file-button {
+	input[type="file"] {
+		margin-left: 200px !important;
+
+		&::-webkit-file-upload-button {
+			display: inline-block;
+		}
+		&::file-selector-button {
+			display: inline-block;
+		}
+	}
+
+	&:hover {
+		input[type="file"] {
+      color: red;
+      border: 1px solid green;
+    }
+	}
+}
+
+
 .upload-container {
-    max-width: 600px;
+   width: 50px;
     margin: 50px auto;
     padding: 20px;
     background-color: #fff;

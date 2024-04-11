@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import Header from './Header'; // Adjust the path accordingly
+import Footer from './Footer';
 import './Register.css'; // Import your CSS file
 
 const Register = () => {
@@ -25,6 +27,10 @@ const Register = () => {
   };
 
   return (
+
+    <div>
+      <Header />
+    
     <div className="register-container">
       <h2>Register</h2>
       <div className="input-container">
@@ -52,6 +58,8 @@ const Register = () => {
       <p className="login-link">
         Already have an account? <Link to="/login">Login here</Link>.
       </p>
+    </div>
+    <Footer />
     </div>
   );
 };

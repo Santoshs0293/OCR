@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: /home/cdot/Documents/Bittoo/documents/translator_app/backend/
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: register
+    depends_on:
+      - postgres
+    networks:
+      - my_network
+
+  frontend:
+    build:
+      context: /home/cdot/Documents/Bittoo/documents/translator_app/my-react-app/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - my_network
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: register
+    ports:
+      - "5432:5432"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    # no need to specify the driver, it defaults to bridge

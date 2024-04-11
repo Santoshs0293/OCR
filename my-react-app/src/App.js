@@ -6,6 +6,8 @@ import Logout from './components/Logout';
 import Homepage from './components/Homepage';
 import Translation from './components/Translation';
 import Upload from './components/Upload';
+import Dictionary from './components/Dictionary'; // Import Dictionary component
+import Lens from './components/Lens'; // Import Dictionary component
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -34,7 +36,18 @@ const App = () => {
           path="/upload"
           element={isLoggedIn ? <Upload /> : <Navigate to="/" />}
         />
-        
+
+        {/* Add route for the dictionary */}
+        <Route
+          path="/dictionary"
+          element={<Dictionary />}
+        />
+
+        <Route
+          path="/lens"
+          element={<Lens />}
+        />
+
         <Route
           path="/logout"
           element={<Logout onLogout={handleLogout} />}
@@ -55,19 +68,3 @@ const App = () => {
 };
 
 export default App;
-
-  // return (
-  //   <Router>
-  //     <Routes>
-  //     <Route path="/" element={<Homepage />} />
-
-  //        <Route path="/Homepage" element={<Homepage />} />
-  //       <Route path="/login" element={<Login />} />
-  //       <Route path="/register" element={<Register />} />
-        
-  //       <Route path="/logout" element={<Logout />} />
-  //     </Routes>
-  //   </Router>
-  // );
-
-
