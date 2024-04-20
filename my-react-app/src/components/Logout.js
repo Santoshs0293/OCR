@@ -25,20 +25,24 @@ const Logout = () => {
   return (
     <div>
       <Header />
-      <div>
+      <div className="text-center mt-5">
         <h2>Logout</h2>
         <button onClick={toggleConfirmation}>Logout</button>
         {showConfirmation && (
-          <div className="confirmation-dialog">
+          <div className="confirmation-dialog mt-3">
             <p>Are you sure you want to logout?</p>
-            <button onClick={handleLogout}>Yes</button>
-            <button onClick={toggleConfirmation}>Cancel</button>
+            <div>
+              <button onClick={handleLogout} className="mr-3">Yes</button>
+              <button onClick={toggleConfirmation} className="ml-3">Cancel</button>
+            </div>
           </div>
         )}
       </div>
       <Footer />
     </div>
   );
+  
+  
 };
 
 export default Logout;

@@ -89,15 +89,21 @@ const Upload = () => {
   };
 
   const renderFile = () => {
-    if (uploadedFileUrl.endsWith(".jpg")) {
+    if (typeof uploadedFileUrl !== 'string') {
+      return <p>Invalid file URL</p>;
+    }
+  
+    const lowerCaseUrl = uploadedFileUrl.toLowerCase();
+  
+    if (lowerCaseUrl.endsWith('.jpg') || lowerCaseUrl.endsWith('.jpeg') || lowerCaseUrl.endsWith('.gif') || lowerCaseUrl.endsWith('.bmp') || lowerCaseUrl.endsWith('.tiff') || lowerCaseUrl.endsWith('.raw') || lowerCaseUrl.endsWith('.tif')) {
       return (
         <img
           src={uploadedFileUrl}
-          alt="Uploaded JPG"
+          alt="Uploaded Image"
           style={{ maxWidth: "100%", borderRadius: "5px" }}
         />
       );
-    } else if (uploadedFileUrl.endsWith(".pdf")) {
+    } else if (lowerCaseUrl.endsWith(".pdf")) {
       return (
         <iframe
           src={uploadedFileUrl}
@@ -105,7 +111,7 @@ const Upload = () => {
           style={{ width: "100%", height: "500px", border: "1px solid #ccc" }}
         />
       );
-    } else if (uploadedFileUrl.endsWith(".png")) {
+    } else if (lowerCaseUrl.endsWith(".png")) {
       return (
         <img
           src={uploadedFileUrl}
@@ -125,8 +131,9 @@ const Upload = () => {
       <div className="sidebar">
         <a href="/">Home</a>
         <Link to="/upload" className="active">Upload</Link>
-        <a href="/dictionary">Dictionary</a>
-        <a href="/lens">Advision Lens</a>
+        <Link to="/dictionary">Dictionary</Link>
+        <Link to="/lens">Advision Lens</Link>
+        <Link to="/training">Model Training</Link>
         <a href="/logout">Logout</a>
         
         <a href="#about">About</a>

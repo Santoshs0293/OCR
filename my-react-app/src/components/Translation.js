@@ -17,8 +17,9 @@ const Translation = () => {
       <div className="sidebar">
         <a className="active" href="/">Home</a>
         <Link to="/upload">Upload</Link>
-        <a href="/dictionary">Dictionary</a>
-        <a href="/lens">Advision Lens</a>
+        <Link to="/dictionary">Dictionary</Link>
+        <Link to="/lens">Advision Lens</Link>
+        <Link to="/training">Model Training</Link>
         <a href="/logout">Logout</a>
         
         <a href="#about">About</a>

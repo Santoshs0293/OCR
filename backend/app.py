@@ -7,6 +7,8 @@ import os
 import subprocess
 import sys
 from process_file import translate_russian_to_english
+from training import train_model
+import time
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -94,12 +96,10 @@ def process_uploaded_file(file_name):
         result = subprocess.run(["/usr/bin/python3", script_path, os.path.join(app.config['UPLOAD_FOLDER'], file_name)], capture_output=True, text=True, check=True)
         russian_text = result.stdout.strip()
 
-        
-
         return russian_text
                
         
-# Add any further processing or handling of the result if needed
+    # Add any further processing or handling of the result if needed
     except subprocess.CalledProcessError as e:
         print(f"Error processing file: {e}")
 
@@ -134,7 +134,6 @@ def upload_file():
             return jsonify({'error': 'Error processing file'})
 
 
-
 def process_uploaded_file1(file_name):
     try:
         script_path = os.path.join(os.getcwd(), 'process_file1.py')
@@ -145,7 +144,7 @@ def process_uploaded_file1(file_name):
         return True
                
         
-# Add any further processing or handling of the result if needed
+    # Add any further processing or handling of the result if needed
     except subprocess.CalledProcessError as e:
         print(f"Error processing file: {e}")
 
@@ -174,6 +173,44 @@ def upload_file1():
             return jsonify({'error': 'Error processing file'})
 
 
+def process_uploaded_csv_file(file_name):
+    try:
+        script_path = os.path.join(os.getcwd(), 'training.py')
+        result = subprocess.run(["/usr/bin/python3", script_path, os.path.join(app.config['UPLOAD_FOLDER'], file_name)], capture_output=True, text=True, check=True)
+        time.sleep(5)  # Simulate processing time
+
+        return True
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error processing file: {e}")
+
+@app.route('/upload_csv', methods=['POST'])
+def upload_csv_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'})
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'})
+
+    if file:
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filename)
+
+        out = process_uploaded_csv_file(file.filename)
+        if out == True:
+            def progress_callback(progress):
+                session['training_progress'] = progress
+            train_model(filename, progress_callback)
+
+            file_url = f"http://localhost:5000/uploads/{file.filename}"
+            return jsonify({
+                'message': 'File uploaded and processed successfully',
+                'filename': file.filename,
+                'file_url': file_url
+            })
+        else:
+            return jsonify({'error': 'Error processing file'})
 
 
 @app.route('/uploads/<filename>')
@@ -210,6 +247,11 @@ def translate_text():
         'russian_text': russian_text,
         'translated_text': translated_text
     })
+
+@app.route('/training-progress', methods=['GET'])
+def training_progress():
+    progress = session.get('training_progress', 0)
+    return jsonify({'progress': progress})
 
 if __name__ == '__main__':
     with app.app_context():

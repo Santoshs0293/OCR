@@ -8,6 +8,7 @@ import Translation from './components/Translation';
 import Upload from './components/Upload';
 import Dictionary from './components/Dictionary'; // Import Dictionary component
 import Lens from './components/Lens'; // Import Dictionary component
+import Training from './components/Training'
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -40,12 +41,17 @@ const App = () => {
         {/* Add route for the dictionary */}
         <Route
           path="/dictionary"
-          element={<Dictionary />}
+          element={isLoggedIn ? <Dictionary /> : <Navigate to="/" />}
         />
 
         <Route
           path="/lens"
-          element={<Lens />}
+          element={isLoggedIn ? <Lens /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/training"
+          element={isLoggedIn ? <Training /> : <Navigate to="/" />}
         />
 
         <Route

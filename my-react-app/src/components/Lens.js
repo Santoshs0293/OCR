@@ -109,7 +109,13 @@ const Lens = () => {
 
 
   const renderFile = () => {
-    if (uploadedFileUrl.endsWith(".jpg")) {
+    if (uploadedFileUrl.toLowerCase().endsWith('.jpg') || 
+        uploadedFileUrl.toLowerCase().endsWith('.jpeg') || 
+        uploadedFileUrl.toLowerCase().endsWith('.gif') || 
+        uploadedFileUrl.toLowerCase().endsWith('.bmp') || 
+        uploadedFileUrl.toLowerCase().endsWith('.tiff') || 
+        uploadedFileUrl.toLowerCase().endsWith('.raw') || 
+        uploadedFileUrl.toLowerCase().endsWith('.tif')) {
       return (
         <img
           src={uploadedFileUrl}
@@ -117,7 +123,7 @@ const Lens = () => {
           style={{ maxWidth: "100%", borderRadius: "5px" }}
         />
       );
-    } else if (uploadedFileUrl.endsWith(".pdf")) {
+    } else if (uploadedFileUrl.toLowerCase().endsWith(".pdf")) {
       return (
         <iframe
           src={uploadedFileUrl}
@@ -125,7 +131,7 @@ const Lens = () => {
           style={{ width: "100%", height: "500px", border: "1px solid #ccc" }}
         />
       );
-    } else if (uploadedFileUrl.endsWith(".png")) {
+    } else if (uploadedFileUrl.toLowerCase().endsWith(".png")) {
       return (
         <img
           src={uploadedFileUrl}
@@ -144,9 +150,10 @@ const Lens = () => {
 
       <div className="sidebar">
         <a href="/">Home</a>
-        <a href="/upload">Upload</a>
-        <a href="/dictionary">Dictionary</a>
-        <a href="/lens" className="active">Advision Lens</a> 
+        <Link to="/upload">Upload</Link>
+        <Link to="/dictionary">Dictionary</Link>
+        <Link to="/lens" className="active">Advision Lens</Link>
+        <Link to="/training">Model Training</Link> 
         <a href="/logout">Logout</a>
         
         <a href="#about">About</a>

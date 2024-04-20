@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 from pdf2image import convert_from_path
 from transformers import MarianMTModel, MarianTokenizer
 import pytesseract
@@ -27,21 +27,46 @@ def convert_pdf_to_text(pdf_path):
 
 def extract_text_from_file(file_path):
     text = ""
-    if file_path.endswith('.pdf'):
-        doc = fitz.open(file_path)
-        for page_num in range(doc.page_count):
-            page = doc[page_num]
-            text += page.get_text()
-        doc.close()
-    elif file_path.endswith('.jpg') or file_path.endswith('.png'):
-        image = Image.open(file_path)
-        text = pytesseract.image_to_string(image, lang='rus')  # Using pytesseract for OCR
+    file_path_lower = file_path.lower()  # Use a lower case version of file_path to simplify checks
+
+    if file_path_lower.endswith('.pdf'):
+        try:
+            doc = fitz.open(file_path)
+            for page in doc:
+                text += page.get_text()
+            doc.close()
+        except Exception as e:
+            text = "Failed to process PDF: " + str(e)
+            print(text)  # More detailed error printout
+
+    elif file_path_lower.endswith(('.jpg', '.png', '.jpeg', '.gif', '.bmp', '.tiff', '.tif')):
+        try:
+            image = Image.open(file_path)
+            image = preprocess_image(image)
+            text = pytesseract.image_to_string(image, lang='rus')
+        except Exception as e:
+            text = "Failed to process image: " + str(e)
+            print(text)  # More detailed error printout
+
     else:
         text = "Unsupported file format."
-    
+
     return text
 
+# Function to preprocess image for better OCR results
+def preprocess_image(image):
+    """Enhance image for better OCR results."""
+    image = image.convert('L')  # Convert to grayscale
+    image = image.filter(ImageFilter.MedianFilter(size=3))  # Apply a median filter
+    enhancer = ImageEnhance.Contrast(image)
+    image = enhancer.enhance(2)  # Increase contrast
+    enhancer = ImageEnhance.Sharpness(image)
+    image = enhancer.enhance(2)  # Increase sharpness
+    return image
+
 # Function to translate Russian text to English
+import re
+
 def translate_russian_to_english(long_text, max_length=512):
     model_name = "Helsinki-NLP/opus-mt-ru-en"
     model = MarianMTModel.from_pretrained(model_name)
@@ -53,7 +78,27 @@ def translate_russian_to_english(long_text, max_length=512):
         inputs = tokenizer(paragraph, return_tensors="pt", truncation=True)
         translation_ids = model.generate(**inputs, max_length=max_length)
         translation = tokenizer.decode(translation_ids[0], skip_special_tokens=True)
-        translated_paragraphs.append(translation)
+
+        # Remove consecutive duplicate characters, words, or groups of words
+        cleaned_translation = re.sub(r'([^\W\d_])\1+', r'\1', translation)  # Remove consecutive duplicate characters excluding digits
+        cleaned_translation = re.sub(r'\b(\w+)(?:\W+\1\b)+', r'\1', cleaned_translation,
+                                    flags=re.IGNORECASE)  # Remove consecutive duplicate words
+        cleaned_translation = re.sub(r'((?:\b\w+\b(?:\W+|$)){3,})\1+', r'\1', cleaned_translation,
+                                    flags=re.IGNORECASE)  # Remove consecutive duplicate groups of words
+
+        # Remove fully repeated phrases
+        cleaned_translation = re.sub(r'\b(\w+(?:\s+\w+)+)\b(?=.*\b\1\b)', '', cleaned_translation,
+                                     flags=re.IGNORECASE)
+        
+        # Remove consecutive duplicate phrases
+        cleaned_translation = re.sub(r'(\b(?:\w+(?:\s+|$)){3,})\1+', r'\1', cleaned_translation, flags=re.IGNORECASE)
+
+        # Remove repetitive sequences such as "♪" and spaces
+        cleaned_translation = re.sub(r'(?:♪|\s)+', ' ', cleaned_translation)
+        # Regex to remove consecutive duplicate symbols specified
+        cleaned_translation = re.sub(r'([~`!@#$%^&*,.;:"?<>/\\\\\ ])\1+', r'\1', cleaned_translation)
+
+        translated_paragraphs.append(cleaned_translation)
 
     final_translation = ". ".join(translated_paragraphs)
     return final_translation

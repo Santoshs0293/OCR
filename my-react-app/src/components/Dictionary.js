@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import RussianKeyboard from './RussianKeyboard'; // Adjust the path accordingly
 import Header from './Header'; // Adjust the path accordingly
-import Footer from './Footer'; // Remember to import Footer as well
+//import Footer from './Footer'; // Remember to import Footer as well
 import './style.css'; // Assuming this is the correct path for your CSS
 
 const Dictionary = () => {
@@ -40,9 +40,10 @@ const Dictionary = () => {
       <div className="sidebar col-md-3 col-12">
         
         <a to="/home">Home</a>
-        <a href="upload">Upload</a>
+        <Link to="/upload">Upload</Link>
         <Link to="/dictionary" className="active">Dictionary</Link> {/* Marked as active to indicate current page */}
         <Link to="/lens">Advision Lens</Link>
+        <Link to="/training">Model Training</Link>
         <Link to="/logout">Logout</Link>
         <Link to="#about">About</Link>
       </div>
@@ -80,7 +81,7 @@ const Dictionary = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      
     </div>
   );
 };

@@ -10,15 +10,59 @@ const RussianKeyboard = ({ onCharacterClick }) => {
     ['Ctrl', 'Win', 'Alt', 'Space', 'Alt', 'Win', 'Ctrl']
   ];
 
+  // Function to handle character click on virtual keyboard
+  const handleCharacterClick = (key) => {
+    if (key === 'Shift') {
+      // Toggle shift state
+      keyboardLayout.forEach(row => {
+        row.forEach((char, index) => {
+          if (index !== 0 && index !== row.length - 1) {
+            row[index] = char === char.toLowerCase() ? char.toUpperCase() : char.toLowerCase();
+          }
+        });
+      });
+    } else {
+      onCharacterClick(key);
+    }
+  };
+
+  // Styles for the keyboard and buttons
+  const keyboardStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: '20px'
+  };
+
+  const rowStyle = {
+    display: 'flex',
+    justifyContent: 'center'
+  };
+
+  const buttonStyle = {
+    padding: '10px 15px',
+    margin: '5px',
+    backgroundColor: '#4A90E2', // A nice blue
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer'
+  };
+
+  const specialKeyStyle = {
+    ...buttonStyle,
+    backgroundColor: '#F5A623' // A different color for special keys like Shift, Ctrl, etc.
+  };
+
   return (
-    <div className="keyboard">
+    <div style={keyboardStyle} className="keyboard">
       {keyboardLayout.map((row, rowIndex) => (
-        <div key={rowIndex} className="keyboard-row">
+        <div key={rowIndex} style={rowStyle} className="keyboard-row">
           {row.map((key, keyIndex) => (
             <button
               key={keyIndex}
-              className={`keyboard-key ${key === 'Space' ? 'space-key' : ''}`}
-              onClick={() => onCharacterClick(key)}
+              style={key === 'Shift' || key === 'Ctrl' || key === 'Alt' || key === 'Space' || key === 'Enter' ? specialKeyStyle : buttonStyle}
+              onClick={() => handleCharacterClick(key)}
             >
               {key}
             </button>
