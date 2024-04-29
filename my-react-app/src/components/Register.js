@@ -5,6 +5,8 @@ import Header from './Header'; // Adjust the path accordingly
 import Footer from './Footer';
 import './Register.css'; // Import your CSS file
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -13,7 +15,7 @@ const Register = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      const response = await axios.post(`${apiUrl}register`, {
         username,
         password,
       });

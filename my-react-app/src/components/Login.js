@@ -5,6 +5,7 @@ import Header from './Header'; // Adjust the path accordingly
 import Footer from './Footer'; 
 import './Login.css';
 
+const apiUrl = process.env.REACT_APP_API_URL;
 
 
 const Login = ({onLogin}) => {
@@ -15,7 +16,7 @@ const Login = ({onLogin}) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', {
+      const response = await axios.post(`${apiUrl}login`, {
         username,
         password,
       });

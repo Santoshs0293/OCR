@@ -13,7 +13,7 @@ const Homepage = () => {
       
        
       <div className="container">
-        <h2>Welcome to the Advision Research </h2>
+        <h2>Welcome to the Advisions Research </h2>
         <p>This is a secure area for logged-in users.</p>
 
         <div className="link-container">

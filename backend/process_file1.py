@@ -110,7 +110,7 @@ def process_file(file_path):
         text_x = max(bbox[0][0], bbox[0][0] + (bbox[2][0] - bbox[0][0] - text_size[0]) // 2)
         text_y = max(bbox[0][1], bbox[0][1] + (bbox[2][1] - bbox[0][1] + text_size[1]) // 2)
         # Draw translated text
-        cv2.putText(img, translated_text, (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (255, 0, 0), 2)
+        cv2.putText(img, translated_text, (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0), 2)
     
     output_folder = 'Download'
     if not os.path.exists(output_folder):

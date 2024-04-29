@@ -6,6 +6,8 @@ import Header from "./Header"; // Adjust the path accordingly
 import "./Upload.css";
 import './style.css';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState("");
@@ -29,19 +31,15 @@ const Upload = () => {
     formData.append("file", selectedFile);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`${apiUrl}upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
 
       if (response.data && response.data.filename) {
-        const fileUrl = `http://localhost:5000/uploads/${response.data.filename}`;
+        const fileUrl = `${apiUrl}uploads/${response.data.filename}`;
         setUploadedFileUrl(fileUrl);
         setRussianText(response.data.russian_text); // Update Russian text state
         setTranslatedText(response.data.translated_text); // Update translated English text state
@@ -60,34 +58,35 @@ const Upload = () => {
 
   const fetchDocxFiles = async () => {
     try {
-      const response = await fetch("http://localhost:5000/list-docx-files", {
+      const response = await axios.get(`${apiUrl}list-docx-files`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       });
-
-      if (response.ok) {
-        const data = await response.json();
+  
+      if (response.status === 200) {
+        const data = response.data; // No need for await response.json() with Axios
         const docxFiles = data.docx_files;
         const downloadContainer = document.getElementById("downloadContainer");
-
+      
         docxFiles.forEach((file) => {
           const downloadLink = document.createElement("a");
-          downloadLink.href = `http://localhost:5000/download/${file}`;
+          downloadLink.href = `${apiUrl}download/${file}`;
           downloadLink.download = file;
           downloadLink.textContent = file;
-
+      
           downloadContainer.appendChild(downloadLink);
           downloadContainer.appendChild(document.createElement("br"));
         });
       } else {
         console.error("Error fetching .docx files:", response.statusText);
       }
+      
     } catch (error) {
       console.error("Error fetching .docx files:", error);
     }
   };
-
+  
   const renderFile = () => {
     if (typeof uploadedFileUrl !== 'string') {
       return <p>Invalid file URL</p>;
@@ -131,16 +130,12 @@ const Upload = () => {
       <div className="sidebar">
         <a href="/">Home</a>
         <Link to="/upload" className="active">Upload</Link>
-        <Link to="/dictionary">Dictionary</Link>
-        <Link to="/lens">Advision Lens</Link>
-        <Link to="/training">Model Training</Link>
         <a href="/logout">Logout</a>
-        
         <a href="#about">About</a>
       </div>
 
       <div className="containder-fluid text-center align-item-center mt-3">
-        <h1>Welcome Advisions Translation Tool</h1>
+        <h1>Welcome Advisions OCR Tool</h1>
         <div className="input-group custom-file-button">
           <input
             type="file"
@@ -166,12 +161,9 @@ const Upload = () => {
             {renderFile()}
 
             <div style={{ marginTop: "20px", display: "flex", flexDirection: "column" }}>
+              
               <div>
-                <p style={{ fontWeight: "bold" }}>Russian Text:</p>
-                <p>{russianText}</p>
-              </div>
-              <div>
-                <p style={{ fontWeight: "bold" }}>Translated Text:</p>
+                <p style={{ fontWeight: "bold" }}>OCR Text:</p>
                 <p>{translatedText}</p>
               </div>
             </div>
@@ -198,7 +190,7 @@ const Upload = () => {
                   e.target.style.backgroundColor = "#61dafb";
                 }}
               >
-                Download Translated File
+                Download OCR File
               </button>
             </div>
           </div>

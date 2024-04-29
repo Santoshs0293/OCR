@@ -6,12 +6,14 @@ import secrets
 import os
 import subprocess
 import sys
-from process_file import translate_russian_to_english
-from training import train_model
+from process_file1 import translate_russian_to_english
+
 import time
 
+
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+# Enable CORS for all routes
 
 # Replace 'your_database_uri' with your PostgreSQL database URI
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://test:test@localhost/register'
@@ -46,9 +48,17 @@ app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 # Create 'uploads' directory if it doesn't exist
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+def clear_uploads_folder():
+    """Clears all files in the uploads folder."""
+    folder_path = app.config['UPLOAD_FOLDER']
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
 
 
-@app.route('/register', methods=['POST'])
+
+@app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
     username = data.get('username')
@@ -65,7 +75,7 @@ def register():
 
     return jsonify({'message': 'User registered successfully'}), 201
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
     username = data.get('username')
@@ -80,7 +90,7 @@ def login():
     else:
         return jsonify({'error': 'Invalid credentials'}), 401
 
-@app.route('/logout', methods=['GET'])
+@app.route('/api/logout', methods=['GET'])
 def logout():
     # Clear the entire session
     session.clear()
@@ -104,7 +114,7 @@ def process_uploaded_file(file_name):
         print(f"Error processing file: {e}")
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/api/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'})
@@ -114,6 +124,7 @@ def upload_file():
         return jsonify({'error': 'No selected file'})
 
     if file:
+        clear_uploads_folder()  # Clear old files
         filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filename)
 
@@ -134,126 +145,32 @@ def upload_file():
             return jsonify({'error': 'Error processing file'})
 
 
-def process_uploaded_file1(file_name):
-    try:
-        script_path = os.path.join(os.getcwd(), 'process_file1.py')
-        # Call your processing script here with the uploaded file path
-        #subprocess.run(["/usr/bin/python3",  script_path, os.path.join(app.config['UPLOAD_FOLDER'], file_name)], check=True)
-        result = subprocess.run(["/usr/bin/python3", script_path, os.path.join(app.config['UPLOAD_FOLDER'], file_name)], capture_output=False, text=False, check=False)
-        
-        return True
-               
-        
-    # Add any further processing or handling of the result if needed
-    except subprocess.CalledProcessError as e:
-        print(f"Error processing file: {e}")
 
-@app.route('/upload1', methods=['POST'])
-def upload_file1():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'})
-
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'})
-
-    if file:
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filename)
-
-        out = process_uploaded_file1(file.filename)
-        if out == True:
-            return jsonify({
-                'message': 'File uploaded and processed successfully',
-                'filename': file.filename,
-                # 'russian_text': russian_text,
-                # 'english_text': english_text
-            })
-        else:
-            return jsonify({'error': 'Error processing file'})
-
-
-def process_uploaded_csv_file(file_name):
-    try:
-        script_path = os.path.join(os.getcwd(), 'training.py')
-        result = subprocess.run(["/usr/bin/python3", script_path, os.path.join(app.config['UPLOAD_FOLDER'], file_name)], capture_output=True, text=True, check=True)
-        time.sleep(5)  # Simulate processing time
-
-        return True
-
-    except subprocess.CalledProcessError as e:
-        print(f"Error processing file: {e}")
-
-@app.route('/upload_csv', methods=['POST'])
-def upload_csv_file():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'})
-
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'})
-
-    if file:
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filename)
-
-        out = process_uploaded_csv_file(file.filename)
-        if out == True:
-            def progress_callback(progress):
-                session['training_progress'] = progress
-            train_model(filename, progress_callback)
-
-            file_url = f"http://localhost:5000/uploads/{file.filename}"
-            return jsonify({
-                'message': 'File uploaded and processed successfully',
-                'filename': file.filename,
-                'file_url': file_url
-            })
-        else:
-            return jsonify({'error': 'Error processing file'})
-
-
-@app.route('/uploads/<filename>')
+@app.route('/api/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
-@app.route('/list-docx-files', methods=['GET'])
+@app.route('/api/list-docx-files', methods=['GET'])
 def list_docx_files():
     docx_files = [f for f in os.listdir(app.config['DOWNLOAD_FOLDER']) if f.endswith('.docx')]
     return jsonify({'docx_files': docx_files})
 
-@app.route('/list-jpg-file', methods=['GET'])
+@app.route('/api/list-jpg-file', methods=['GET'])
 def list_jgp_file():
     jpg_file = [f for f in os.listdir(app.config['DOWNLOAD_FOLDER']) if f.endswith('.jpg')]
     return jsonify({'jpg_file': jpg_file})
 
 
-@app.route('/download/<path:filename>', methods=['GET'])
+@app.route('/api/download/<path:filename>', methods=['GET'])
 def download(filename):
     try:
         return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename, as_attachment=True)
     except FileNotFoundError:
         return jsonify({'error': 'File not found'}), 404
 
-# Route to handle translation
-@app.route('/translate', methods=['POST'])
-def translate_text():
-    data = request.json
-    russian_text = data.get('russian_text', '')
-
-    translated_text = translate_russian_to_english(russian_text)
-    return jsonify({
-        'russian_text': russian_text,
-        'translated_text': translated_text
-    })
-
-@app.route('/training-progress', methods=['GET'])
-def training_progress():
-    progress = session.get('training_progress', 0)
-    return jsonify({'progress': progress})
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5005) 

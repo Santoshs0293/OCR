@@ -17,18 +17,14 @@ const Translation = () => {
       <div className="sidebar">
         <a className="active" href="/">Home</a>
         <Link to="/upload">Upload</Link>
-        <Link to="/dictionary">Dictionary</Link>
-        <Link to="/lens">Advision Lens</Link>
-        <Link to="/training">Model Training</Link>
         <a href="/logout">Logout</a>
-        
         <a href="#about">About</a>
       </div>
 
       <div className="content">
  
       <div className="container">
-        <h2>Welcome to the Advision Research </h2>
+        <h2>Welcome to the Advisions Research </h2>
         <p>This is a secure area for logged-in users.</p>
 
         

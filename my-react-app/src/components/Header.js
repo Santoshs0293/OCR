@@ -9,8 +9,8 @@ const Header = () => {
 
 
     <header className='sticky-top' style={headerStyle}>
-      <img alt="Logo" style={logoStyle} />
-      <h1 style={headingStyle}>Advision Research</h1>
+      <img alt="OCR" style={headingStyle} />
+      <h1 style={headingStyle}>Advisions Research</h1>
     </header>
   );
 };

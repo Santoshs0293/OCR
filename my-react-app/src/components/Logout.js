@@ -4,13 +4,15 @@ import Header from './Header'; // Adjust the path accordingly
 import Footer from './Footer';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const Logout = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate(); // Use useNavigate hook to navigate
 
   const handleLogout = async () => {
     try {
-      await axios.get('http://localhost:5000/logout');
+      await axios.get(`${apiUrl}logout`);
       // Redirect to the login page
       navigate('/login'); // Use navigate function to redirect
     } catch (error) {
