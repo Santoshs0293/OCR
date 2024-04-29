@@ -40,3 +40,4 @@ Frontend Setup
 
 ![image](https://github.com/bittoob/russian_to_english/assets/84467660/21a09236-00c1-4fd9-99b1-5d9524a4cb19)
 
+# OCR
