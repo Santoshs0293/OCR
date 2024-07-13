@@ -1,0 +1,11 @@
+# Ignore everything
+*
+# But not these files and directories
+!/backend/
+!/docker-compose.yml
+!/my-react-app/
+!/README.md
+!/requirements.txt
+# Ensure hidden files inside directories are also tracked
+!/backend/.gitkeep
+!/my-react-app/.gitkeep
